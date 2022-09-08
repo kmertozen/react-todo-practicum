@@ -3,6 +3,7 @@ function App() {
 
   const axios = require("axios");
   const [userName, setUserName] = useState(localStorage.getItem("username") || "")
+  const [darkMode, setDarkMode] = useState(localStorage.getItem("darkmode") || false)
   const [todos, setTodos] = useState([])
   const [todo, setTodo] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -10,6 +11,7 @@ function App() {
   const [changedTodo, setChangedTodo] = useState("")
   const url = "https://6318c3f76b4c78d91b2e80e8.mockapi.io/todos";
 
+  console.log(darkMode)
   useEffect(() => {
     setIsLoading(false)
     request();
@@ -42,10 +44,15 @@ function App() {
           request();
           setTodo("");
         })
-        .catch(error => {
-          console.error(error);
-        });
     } else alert("Lütfen en az 3 karakter giriniz.")
+  }
+
+  const completeHandler = (id, complete) => {
+    setIsLoading(false)
+    axios.put(`${url}/${id}`, { isCompleted: !complete })
+      .then(response => {
+        request();
+      })
   }
 
   const deleteHandler = (id) => {
@@ -54,9 +61,6 @@ function App() {
       .then(response => {
         request();
       })
-      .catch(error => {
-        console.error(error);
-      });
   }
 
   const editHandler = (id, content) => {
@@ -76,7 +80,7 @@ function App() {
   const loginHandler = (e) => {
     e.preventDefault();
     setUserName(e.target.username.value)
-    localStorage.setItem('username', e.target.username.value)
+    localStorage.setItem("username", e.target.username.value)
   }
 
   const logoutHandler = () => {
@@ -84,24 +88,29 @@ function App() {
     setUserName("")
   }
 
+  const modHandler = () => {
+    setDarkMode(!darkMode)
+    localStorage.setItem("darkmode",darkMode);
+  }
   return (
-    <div className="App mt-5">
+    <div className={`App mt-5 ${darkMode=="true" ? "dark":""} `}>
+      <button onClick={() => modHandler()}>Dark Mod</button>
       {userName == "" ?
-        <form className="form-signin w-25 m-auto p-4 bg-white" onSubmit={loginHandler}>
+        <form className="form-signin w-25 m-auto p-4 " onSubmit={loginHandler}>
           <h1 className="h3 mb-3 font-weight-normal">Kullanıcı Adı Giriniz</h1>
           <input type="text" className="form-control mt-4" name="username" placeholder="Kullanıcı Adı" />
           <button className="btn btn-lg btn-primary btn-block mt-4" type="submit">Giriş Yap</button>
         </form> :
         <>
-          <form className="w-50 mx-auto bg-white pt-4 position-relative">
+          <form className="form-todo w-50 mx-auto p-4 position-relative">
             <div className="d-flex w-100 justify-content-between px-4 pointer">Hoş Geldin {userName}
               <span onClick={logoutHandler} className="logout">Çıkış Yap</span>
             </div>
             <header>
-              <h1 className="text-dark my-2">To Do List</h1>
+              <h1 className="my-2">To Do List</h1>
             </header>
             <div className="w-75 d-flex">
-              <input type="text" className="bg-light rounded w-100 px-4" placeholder="Yeni Görev Ekle" onChange={inputTextHandler} value={todo} />
+              <input type="text" className="rounded w-100 px-4" placeholder="Yeni Görev Ekle" onChange={inputTextHandler} value={todo} />
               <button type="submit" onClick={submitHandle}>+</button>
             </div>
           </form>
@@ -110,7 +119,7 @@ function App() {
               <>
                 <ul className="w-50 p-0 rounded-bottom">
                   {todos.map((todo) => (
-                    <li key={todo.id} className={`todo list-group-item d-flex  rounded-0`}>
+                    <li key={todo.id} className={`todo list-group-item d-flex ${todo.isCompleted ? "completed" : ""}  rounded-0`}>
 
                       <span className="todo-item mr-auto" >{edit.id == todo.id ? <input type="text" value={changedTodo} className="bg-light rounded w-100 px-4" onChange={(e) => setChangedTodo(e.target.value)} /> : todo.content}</span>
                       {edit.id == todo.id ?
@@ -118,7 +127,7 @@ function App() {
                         :
                         <button className="btn btn-secondary mr-2" onClick={() => editHandler(todo.id, todo.content)}>Düzenle</button>
                       }
-                      <button className="btn btn-success mr-2">Tamamla</button>
+                      <button className="btn btn-success mr-2" onClick={() => completeHandler(todo.id, todo.isCompleted)}>Tamamla</button>
                       <button className="btn btn-danger" onClick={() => deleteHandler(todo.id)}>Kaldır</button>
                     </li>
                   ))}
