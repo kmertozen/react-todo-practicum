@@ -90,11 +90,10 @@ function App() {
 
   const modHandler = () => {
     setDarkMode(!darkMode)
-    localStorage.setItem("darkmode",darkMode);
+    localStorage.setItem("darkmode", darkMode);
   }
   return (
-    <div className={`App mt-5 ${darkMode=="true" ? "dark":""} `}>
-      <button onClick={() => modHandler()}>Dark Mod</button>
+    <div className={`App mt-5 ${localStorage.getItem("darkmode") == "true" ? "dark" : ""} `}>
       {userName == "" ?
         <form className="form-signin w-25 m-auto p-4 " onSubmit={loginHandler}>
           <h1 className="h3 mb-3 font-weight-normal">Kullanıcı Adı Giriniz</h1>
@@ -104,7 +103,10 @@ function App() {
         <>
           <form className="form-todo w-50 mx-auto p-4 position-relative">
             <div className="d-flex w-100 justify-content-between px-4 pointer">Hoş Geldin {userName}
-              <span onClick={logoutHandler} className="logout">Çıkış Yap</span>
+              <div>
+                <span onClick={modHandler} className="logout">Dark Mod</span>
+                <span onClick={logoutHandler} className="logout ml-2">Çıkış Yap</span>
+              </div>
             </div>
             <header>
               <h1 className="my-2">To Do List</h1>
