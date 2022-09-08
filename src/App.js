@@ -3,7 +3,7 @@ function App() {
 
   const axios = require("axios");
   const [userName, setUserName] = useState(localStorage.getItem("username") || "")
-  const [darkMode, setDarkMode] = useState(localStorage.getItem("darkmode") || false)
+  const [darkMode, setDarkMode] = useState(localStorage.getItem("darkmode"))
   const [todos, setTodos] = useState([])
   const [todo, setTodo] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -11,7 +11,6 @@ function App() {
   const [changedTodo, setChangedTodo] = useState("")
   const url = "https://6318c3f76b4c78d91b2e80e8.mockapi.io/todos";
 
-  console.log(darkMode)
   useEffect(() => {
     setIsLoading(false)
     request();
@@ -93,8 +92,8 @@ function App() {
     localStorage.setItem("darkmode", darkMode);
   }
   return (
-    <div className={`App mt-5 ${localStorage.getItem("darkmode") == "true" ? "dark" : ""} `}>
-      {userName == "" ?
+    <div className={`App mt-5 ${localStorage.getItem("darkmode") === "true" ? "dark" : ""} `}>
+      {userName === "" ?
         <form className="form-signin w-25 m-auto p-4 " onSubmit={loginHandler}>
           <h1 className="h3 mb-3 font-weight-normal">Kullanıcı Adı Giriniz</h1>
           <input type="text" className="form-control mt-4" name="username" placeholder="Kullanıcı Adı" />
@@ -123,8 +122,8 @@ function App() {
                   {todos.map((todo) => (
                     <li key={todo.id} className={`todo list-group-item d-flex ${todo.isCompleted ? "completed" : ""}  rounded-0`}>
 
-                      <span className="todo-item mr-auto" >{edit.id == todo.id ? <input type="text" value={changedTodo} className="bg-light rounded w-100 px-4" onChange={(e) => setChangedTodo(e.target.value)} /> : todo.content}</span>
-                      {edit.id == todo.id ?
+                      <span className="todo-item mr-auto" >{edit.id === todo.id ? <input type="text" value={changedTodo} className="bg-light rounded w-100 px-4" onChange={(e) => setChangedTodo(e.target.value)} /> : todo.content}</span>
+                      {edit.id === todo.id ?
                         <button className="btn btn-secondary mr-2" onClick={(e) => putHandler(todo.id)}>Kaydet</button>
                         :
                         <button className="btn btn-secondary mr-2" onClick={() => editHandler(todo.id, todo.content)}>Düzenle</button>
