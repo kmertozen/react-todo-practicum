@@ -3,7 +3,7 @@ function App() {
 
   const axios = require("axios");
   const [userName, setUserName] = useState(localStorage.getItem("username") || "")
-  const [darkMode, setDarkMode] = useState(localStorage.getItem("darkmode"))
+  const [darkMode, setDarkMode] = useState(localStorage.getItem('darkmode') === 'true')
   const [todos, setTodos] = useState([])
   const [todo, setTodo] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -87,12 +87,17 @@ function App() {
     setUserName("")
   }
 
+  
+  useEffect(() => {
+    localStorage.setItem('darkmode', darkMode);
+  }, [darkMode]);
+
+
   const modHandler = () => {
     setDarkMode(!darkMode)
-    localStorage.setItem("darkmode", darkMode);
   }
   return (
-    <div className={`App mt-5 ${localStorage.getItem("darkmode") === "true" ? "dark" : ""} `}>
+    <div className={`App mt-5 ${darkMode ? "dark" : ""} `}>
       {userName === "" ?
         <form className="form-signin w-25 m-auto p-4 " onSubmit={loginHandler}>
           <h1 className="h3 mb-3 font-weight-normal">Kullanıcı Adı Giriniz</h1>
