@@ -56,7 +56,7 @@ span {
 .form-signin, .form-todo,.todo{background:#fff;color:#18191A}
 
 .dark .form-signin, .dark .form-todo, .dark .todo, .dark .loading{background:#18191A;color:#fff}
-.dark input{background-color: #3A3B3C;border:none!important;}
+.dark input{background-color: #3A3B3C;border:none!important; color:#fff}
 .todo-container {
   display: flex;
   align-items: center;
